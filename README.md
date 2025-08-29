@@ -49,6 +49,23 @@ NodeBB requires the following software to be installed:
 [Please refer to platform-specific installation documentation](https://docs.nodebb.org/installing/os).
 If installing via the cloud (or using Docker), [please see cloud-based installation documentation](https://docs.nodebb.org/installing/cloud/).
 
+### Quick DigitalOcean Installation
+
+For easy deployment on DigitalOcean, we provide an automated installation script:
+
+```bash
+# One-line installation (replace with your domain)
+curl -fsSL https://raw.githubusercontent.com/ShiningVenus/NodeBB/master/install-quick.sh | sudo bash -s forum.example.com
+```
+
+This script will:
+- Set up Docker and all dependencies
+- Configure Nginx with SSL certificates
+- Deploy NodeBB with your choice of database
+- Apply security hardening
+
+See [DIGITALOCEAN.md](DIGITALOCEAN.md) for detailed instructions and customization options.
+
 ## Securing NodeBB
 
 It is important to ensure that your NodeBB and database servers are secured. Bear these points in mind:

@@ -1,0 +1,52 @@
+# DigitalOcean App Platform configuration for NodeBB
+# This file can be used to deploy NodeBB using DigitalOcean's App Platform
+# as an alternative to the droplet-based installation
+
+name: nodebb-forum
+services:
+- name: web
+  github:
+    repo: ShiningVenus/NodeBB
+    branch: master
+  build_command: npm install --production
+  environment_slug: node-js
+  http_port: 4567
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  internal_ports:
+  - 4567
+  routes:
+  - path: /
+  run_command: npm start
+  source_dir: /
+  envs:
+  - key: NODE_ENV
+    value: production
+  - key: NODEBB_URL
+    value: ${APP_URL}
+  - key: NODEBB_DB
+    value: mongo
+  - key: NODEBB_DB_HOST
+    value: ${nodebb-db.DATABASE_URL}
+  - key: NODEBB_DB_NAME
+    value: nodebb
+  - key: SETUP
+    value: |
+      {
+        "url": "${APP_URL}",
+        "database": "mongo",
+        "mongo:host": "${nodebb-db.DATABASE_URL}",
+        "mongo:port": "27017",
+        "mongo:database": "nodebb",
+        "admin:username": "admin",
+        "admin:password": "change_me_please",
+        "admin:password:confirm": "change_me_please",
+        "admin:email": "admin@example.com"
+      }
+
+databases:
+- name: nodebb-db
+  engine: MONGODB
+  num_nodes: 1
+  size: db-s-dev-database
+  version: "5"
