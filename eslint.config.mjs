@@ -5,7 +5,7 @@ import publicConfig from 'eslint-config-nodebb/public';
 import commonRules from 'eslint-config-nodebb/common';
 
 import { defineConfig } from 'eslint/config';
-import stylisticJs from '@stylistic/eslint-plugin-js'
+import stylistic from '@stylistic/eslint-plugin'
 import js from '@eslint/js';
 import globals from 'globals';
 
@@ -35,7 +35,7 @@ export default defineConfig([
 	{
 		plugins: {
 			js,
-			'@stylistic/js': stylisticJs,
+			'@stylistic/js': stylistic,
 		},
 		extends: ['js/recommended'],
 		files: ['test/**/*.js'],

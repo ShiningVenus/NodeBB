@@ -5,7 +5,7 @@ const validator = require('validator');
 const nconf = require('nconf');
 const toobusy = require('toobusy-js');
 const util = require('util');
-const multipart = require('connect-multiparty');
+const multer = require('multer');
 const { csrfSynchronisedProtection } = require('./csrf');
 
 const plugins = require('../plugins');
@@ -27,7 +27,7 @@ const delayCache = cacheCreate({
 	ttl: 1000 * 60,
 	max: 200,
 });
-const multipartMiddleware = multipart();
+const multipartMiddleware = multer().any();
 
 const middleware = module.exports;
 

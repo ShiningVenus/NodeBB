@@ -10,8 +10,8 @@ const { setupApiRoute } = routeHelpers;
 module.exports = function () {
 	const middlewares = [middleware.ensureLoggedIn];
 
-	const multipart = require('connect-multiparty');
-	const multipartMiddleware = multipart();
+	const multer = require('multer');
+	const multipartMiddleware = multer().any();
 
 	setupApiRoute(router, 'post', '/', [middleware.checkRequired.bind(null, ['cid', 'title', 'content'])], controllers.write.topics.create);
 	setupApiRoute(router, 'get', '/:tid', [], controllers.write.topics.get);

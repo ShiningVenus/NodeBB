@@ -154,8 +154,8 @@ Auth.reloadRoutes = async function (params) {
 		});
 	});
 
-	const multipart = require('connect-multiparty');
-	const multipartMiddleware = multipart();
+	const multer = require('multer');
+	const multipartMiddleware = multer().any();
 	const middlewares = [multipartMiddleware, Auth.middleware.applyCSRF, Auth.middleware.applyBlacklist];
 
 	router.post('/register', middlewares, controllers.authentication.register);
