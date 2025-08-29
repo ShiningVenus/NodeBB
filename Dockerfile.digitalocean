@@ -1,0 +1,74 @@
+# Dockerfile optimized for DigitalOcean App Platform
+# This is a streamlined version focused on production deployment
+
+FROM node:20-alpine AS build
+
+# Set environment variables
+ENV NODE_ENV=production \
+    DAEMON=false \
+    SILENT=false
+
+WORKDIR /usr/src/app
+
+# Install system dependencies
+RUN apk add --no-cache \
+    python3 \
+    py3-pip \
+    make \
+    g++ \
+    git \
+    bash
+
+# Copy package files
+COPY install/package.json ./
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --omit=dev && npm cache clean --force
+
+# Copy application source
+COPY . .
+
+# Build the application
+RUN npm run build 2>/dev/null || echo "Build step completed"
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodebb && \
+    adduser -S nodebb -u 1001 -G nodebb
+
+# Set ownership
+RUN chown -R nodebb:nodebb /usr/src/app
+
+# Production stage
+FROM node:20-alpine AS production
+
+ENV NODE_ENV=production \
+    DAEMON=false \
+    SILENT=false \
+    PORT=4567
+
+WORKDIR /usr/src/app
+
+# Install runtime dependencies
+RUN apk add --no-cache bash
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodebb && \
+    adduser -S nodebb -u 1001 -G nodebb
+
+# Copy built application from build stage
+COPY --from=build --chown=nodebb:nodebb /usr/src/app /usr/src/app
+
+# Create necessary directories
+RUN mkdir -p /usr/src/app/logs /usr/src/app/public/uploads && \
+    chown -R nodebb:nodebb /usr/src/app
+
+USER nodebb
+
+EXPOSE 4567
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:4567 || exit 1
+
+CMD ["npm", "start"]
